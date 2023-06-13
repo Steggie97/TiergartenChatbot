@@ -1,0 +1,147 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    line-height: 1.5;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+header {
+    background-color: #fff;
+    display: flex;
+    height: 13svh;
+}
+
+main {
+    background-color: #fff;
+    display: flex;
+    height: 70svh;
+}
+
+footer {
+    background-color: #333;
+    position: absolute;
+    height: 3svh;
+    bottom: 0rem;
+}
+
+#logo {
+    height: 6rem;
+}
+
+#logo-wrapper {
+    padding: 1rem;
+}
+
+.content_heading {
+    padding: 1rem;
+    color: #640000;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.content_heading {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    color: #640000;
+    font-weight: bold;
+}
+
+.btn-custom {
+    background-color: #640000;
+    height: 2.5rem;
+    width: 100%;
+    align-content: center;
+    justify-content: center;
+}
+
+.btn-custom:hover {
+    background-color: #f47b20;
+}
+
+.btn-icon {
+    fill: #fff;
+    height: 1.8rem;
+    align-items: center;
+}
+
+#chat_controls {
+    margin: 0.1rem;
+}
+
+#chat_log {
+    height: 60svh;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    overflow-y: scroll;
+    scrollbar-color: #640000;
+    scrollbar-width: thin;
+}
+
+.custom-input {
+    height: 40px;
+}
+
+.userMsgBox {
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+
+}
+
+.botMsgBox {
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+}
+
+.user_message {
+    background-color: #640000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    padding: 0.4rem 1rem;
+    border-radius: 1.5rem 1.5rem 0rem 1.5rem;
+}
+
+.bot_message {
+    background-color: #640000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    padding: 0.4rem 1rem;
+    border-radius: 1.5rem 1.5rem 1.5rem 0rem;
+}
+#chat_avatar{
+    height: 50rem;
+    margin: 0;
+    padding: 0;
+}
+
+/*Startposition roter Panda */
+#redPanda_closed_eyes{
+    opacity: 1;
+}
+#redPanda_open_mouth{
+    opacity: 1;
+    
+}
+#redPanda_tail{
+    transform-origin:50px;
+}

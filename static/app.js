@@ -1,0 +1,223 @@
+// Author: Lukas Steggers
+// FrontEnd-Script:
+//Variablen: 
+let speechIsActive = false;
+//Eventlistener:Skript soll erst ausgeführt werden, wenn das DOM vollständig geladen ist:
+document.addEventListener('DOMContentLoaded', () => {
+    //Verwendung der Browser-Speechrecognition via Speechrecognition-Objekt/ WebkitURL-Speechrecogniton
+    //Hinweis: Speech-Recognition wird in FireFox nicht unterstüzt. Bei Opera und Safari werden einzelne Features des SpeechRecognition nicht unterstützt.
+    //Mehr Informationen siehe MDN-WebAPI-Dokumentation: https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+
+    //Aufruf des SpeechRecognition via window-Objekt - neue SpeechRecognition-Instanz wird durch Konstruktor erzeugt:
+    //Quelle: https://www.youtube.com/watch?v=9o2rSxHiv9w&list=PLQeAbXMTAyKRnz1I5Ef3-QB6a9VgWN9AB&index=5
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recogniton = new SpeechRecognition();
+    //Spracherkennung auf Deutsch stellen - Default-Sprache: Übernahme Wert des HTML-Attribute "lang"
+    recogniton.lang = 'de';
+
+    //Spracherkennung-Eventhandler:
+    //Start der Spracherkennung
+    recogniton.onstart = () => {
+        console.log('Spracherkennung gestartet');
+        speechIsActive = true;
+        //Änderung des Buttons: Background-Color bleibt während der Aufnahme 
+        document.getElementById('recordBtn').style.backgroundColor = '#f47b20';
+    }
+
+    // Ende der Spracherkennung
+    recogniton.onresult = (event) => {
+        headBobbing.play();
+        let input = event.results[0][0].transcript;
+        console.log(`Speechrecognition-Result: ${input}`);
+        //Erkannter Text im Chatlog einhängen:
+        addMessageToChatLog(input, false);
+        sendTextMsg(input);
+        //Variable auf Standard-Wert zurücksetzen
+        speechIsActive = false;
+        //Zurücksetzen der Standard-Background-Farbe
+        document.getElementById('recordBtn').style.backgroundColor = '#640000';
+    }
+
+    // Eventhandler für Texteingaben:
+    document.getElementById('sendTextBtn').addEventListener('click', (event) => {
+        //Verhindern des Standard-Events
+        event.preventDefault();
+
+        let textMsg = document.getElementById('textInput').value;
+        sendTextMsg(textMsg);
+        //leeren des Text-Inputfeldes
+        document.getElementById('textInput').value = '';
+        //Texteingabe des Users in Chatlog anzeigen:
+        addMessageToChatLog(textMsg, false);
+    });
+
+    //Eventhandler für Spracheingaben
+    document.getElementById('recordBtn').addEventListener('click', (event) => {
+        event.preventDefault();
+        if (!speechIsActive) {
+            //Start der Speechrecognition (siehe Speechrecognition-Eventhandler)
+            recogniton.start();
+        }
+    });
+
+    //Chatbot Begrüßung
+    //setTimeout(() => {
+        sendTextMsg('Hallo');
+    //},500);
+});
+
+//Funktion zum Einhängen der Textnachricht im Chatlog
+//Parameter:
+// message (String): Textnachricht
+// isBotMessage (boolean): true für Nachrichten, die vom Bot stammen | false für Nachrichten vom User
+function addMessageToChatLog(message, isBotMessage) {
+    let chatLog = document.getElementById('chat_log');
+    let message_box = document.createElement('div');
+    if (isBotMessage) {
+        message_box.classList.add('botMsgBox');
+        message_box.innerHTML = `<p class="bot_message">${message}</p>`;
+    }
+    else {
+        message_box.classList.add('userMsgBox');
+        message_box.innerHTML = `<p class="user_message">${message}</p>`;
+    }
+    chatLog.appendChild(message_box);
+    message_box.scrollIntoView(true, { behavior: 'smooth' });
+}
+
+// Funktion zum Abspielen einer Audio-Datei
+
+async function playAudio() {
+    //Durch hinzufügen eines Timestamps im Query-Strings wird verhindert, dass die vorherige Antwort, die vom Server geladen wurde, verwendet wird (caching).
+    //Durch den Timestamp ändert sich die URL der Audio-Datei, sodass der Browser immer eine neue Audiodatei vom Server lädt
+    const audio = new Audio('./media/Audio/output.wav?timestamp=' + Date.now());
+    audio.play();
+}
+
+async function animateMouth(visemInfo) {
+    let audioOffset = visemInfo.audioOffset;
+    let visemId = visemInfo.visemeId;
+    
+    for (let i = 0; i < visemId.length; i++) {
+      let duration;
+      // Animationsdauer ermitteln
+      if (i === 0) {
+        duration = Math.floor(audioOffset[0]);
+      } else {
+        duration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
+      }
+      animationDuration = 2*duration;
+      await delay(duration); // Warte bis zum angegebenen Audiooffset
+      await playAnimation(visemId[i], duration);
+    }
+  }
+  
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+
+async function playAnimation(visemId, duration){
+    //Animation wird in Abhängigkeit der VisemeId abgespielt
+    return new Promise((resolve) => {
+        console.log(`VisemId: ${visemId}, audioOffset: ${duration}`);
+        switch (visemId) {
+            case 0:
+                mouthCompleteCloseAnimation.play();
+                break;
+            case 1:
+                mouthCompleteOpenAnimation.play();
+                break;
+            case 2:
+                mouth3QuarterOpenAnimation.play();
+                break;
+            case 3:
+                mouthHalfOpenAnimation.play();
+                break;
+            case 4:
+                mouth3QuarterOpenAnimation.play();
+                break;
+            case 5:
+                mouth3QuarterOpenAnimation.play();
+                break;
+            case 6:
+                mouth1QuarterOpenAnimation.play();
+                break;
+            case 7:
+                mouth1QuarterOpenAnimation.play();
+                break;
+            case 8:
+                mouthHalfOpenAnimation.play();
+                break;
+            case 9:
+                mouthCompleteOpenAnimation.play();
+                break;
+            case 10:
+                mouthHalfOpenAnimation.play();
+                break;
+            case 11:
+                mouthCompleteOpenAnimation.play();
+                break;
+            case 12:
+                mouth1QuarterOpenAnimation.play();
+                break;
+            case 13:
+                mouthHalfOpenAnimation.play();
+                break;
+            case 14:
+                mouthHalfOpenAnimation.play();
+                break;
+            case 15:
+                mouth1QuarterOpenAnimation.play();
+                break;
+            case 16:
+                mouth1QuarterOpenAnimation.play();
+                break;
+            case 17:
+                mouthCompleteOpenAnimation.play();
+                break;
+            case 18:
+                mouth1QuarterOpenAnimation.play();
+                break;
+            case 19:
+                mouth3QuarterOpenAnimation.play();
+                break;
+            case 20:
+                mouthCompleteOpenAnimation.play();
+                break;
+            case 21:
+                mouthCompleteCloseAnimation.play();
+                break;
+            default:
+                mouthCompleteCloseAnimation.play();
+        }
+        setTimeout(resolve(), 2*duration);
+    });
+   
+}
+// Funktion zum Versenden einer Text-Nachricht zum Server
+async function sendTextMsg(msg) {
+    try {
+        const res = await fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: msg }),
+        });
+        const data = await res.json();
+        console.log(data);
+
+        //Einen Delay von 2500ms einfügen, damit die vollständige Audio-Datei gesendet werden kann
+        //Falls die Datei wegen des noch nicht vollständig durchgeführten Überschreibevorgang abgerufen wird, kommt eine Response mit HTTP Status 416 / bzw. u.U. 404
+        setTimeout(() => {
+            // Antwort vom Chatbot im Chat-Log anzeigen und Audio abspielen.
+            addMessageToChatLog(data.text, true);
+            playAudio();
+            animateMouth(data.viseme);
+        }, 2500);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
