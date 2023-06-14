@@ -7,6 +7,10 @@ let head = document.getElementById('redPanda_head');
 
 //Aktuelle Position des Mundes
 let mouthY = 0;
+
+function updateMouthState(newState){
+    mouthY = newState
+}
 //Variable Animationslänge
 let animationDuration = 50;
 
@@ -64,15 +68,14 @@ tailAnimation.add({
 //Mund wird zu 100% geöffnet
 let mouthCompleteOpenAnimation = anime({
     targets: openMouth,
-    translateY: [0, 12],
+    translateY: [mouthY, 12],
     duration: animationDuration,
     easing: 'linear',
     autoplay: false,
-    complete: () => {
-        mouthCompleteCloseAnimation.play();
-    }
+    //complete: () => {
+    //    mouthCompleteCloseAnimation.play();
+    //}
 });
-
 // Mund wird komplett geschlossen
 let mouthCompleteCloseAnimation = anime({
     targets: openMouth,
@@ -85,15 +88,14 @@ let mouthCompleteCloseAnimation = anime({
 //Mund wird zu 75% geöffnet
 let mouth3QuarterOpenAnimation = anime({
     targets: openMouth,
-    translateY: [0, 9],
+    translateY: [mouthY, 9],
     duration: animationDuration,
     easing: 'linear',
     autoplay: false,
-    complete: () => {
-        mouth3QuarterCloseAnimation.play();
-    }
+    //complete: () => {
+    //    mouth3QuarterCloseAnimation.play();
+    //}
 });
-
 let mouth3QuarterCloseAnimation = anime({
     targets: openMouth,
     translateY: [9, 0],
@@ -105,15 +107,14 @@ let mouth3QuarterCloseAnimation = anime({
 // Mund wird zu 50% geöffnet
 let mouthHalfOpenAnimation = anime({
     targets: openMouth,
-    translateY: [0, 6],
+    translateY: [mouthY, 6],
     duration: animationDuration,
     easing: 'linear',
     autoplay: false,
-    complete: () => {
-        mouthHalfCloseAnimation.play();
-    }
+    //complete: () => {
+    //    mouthHalfCloseAnimation.play();
+    //}
 });
-
 let mouthHalfCloseAnimation = anime({
     targets: openMouth,
     translateY: [6, 0],
@@ -125,15 +126,14 @@ let mouthHalfCloseAnimation = anime({
 //Mund wird zu 25% geöffnet
 let mouth1QuarterOpenAnimation = anime({
     targets: openMouth,
-    translateY: [0, 3],
+    translateY: [mouthY, 3],
     duration: animationDuration,
     easing: 'linear',
     autoplay: false,
-    complete: () => {
-        mouth1QuarterCloseAnimation.play();
-    }
+    //complete: () => {
+    //    mouth1QuarterCloseAnimation.play();
+    //}
 });
-
 let mouth1QuarterCloseAnimation = anime({
     targets: openMouth,
     translateY: [3, 0],
@@ -142,18 +142,26 @@ let mouth1QuarterCloseAnimation = anime({
     autoplay: false,
 });
 
+//Mund wird von beliebiger Position geschlossen
+let mouthCloseAnimation = anime({
+    targets: openMouth,
+    translateY: [mouthY,0],
+    duration: animationDuration,
+    easing: 'linear',
+    autoplay: false,
+});
 
 let headBobbing = anime.timeline({
     easing: 'linear',
     autoplay: false
 }).add({
     targets: head,
-    translateY: [0,3],
+    translateY: [0,5],
     translateX: [-4,-4],
     duration: 250
 }).add({
     targets: head,
-    translateY: [3,0],
+    translateY: [5,0],
     translateX: [-4,-4],
     duration: 250,
     delay: 100

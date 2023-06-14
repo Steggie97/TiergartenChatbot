@@ -106,7 +106,7 @@ async function animateMouth(visemInfo) {
       } else {
         duration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
       }
-      animationDuration = 2*duration;
+      animationDuration = 2*duration;   //animationDuration wird nicht genutzt?
       await delay(duration); // Warte bis zum angegebenen Audiooffset
       await playAnimation(visemId[i], duration);
     }
@@ -122,74 +122,43 @@ async function playAnimation(visemId, duration){
     return new Promise((resolve) => {
         console.log(`VisemId: ${visemId}, audioOffset: ${duration}`);
         switch (visemId) {
-            case 0:
-                mouthCompleteCloseAnimation.play();
-                break;
-            case 1:
-                mouthCompleteOpenAnimation.play();
-                break;
-            case 2:
-                mouth3QuarterOpenAnimation.play();
-                break;
-            case 3:
-                mouthHalfOpenAnimation.play();
-                break;
-            case 4:
-                mouth3QuarterOpenAnimation.play();
-                break;
-            case 5:
-                mouth3QuarterOpenAnimation.play();
-                break;
             case 6:
-                mouth1QuarterOpenAnimation.play();
-                break;
             case 7:
-                mouth1QuarterOpenAnimation.play();
-                break;
-            case 8:
-                mouthHalfOpenAnimation.play();
-                break;
-            case 9:
-                mouthCompleteOpenAnimation.play();
-                break;
-            case 10:
-                mouthHalfOpenAnimation.play();
-                break;
-            case 11:
-                mouthCompleteOpenAnimation.play();
-                break;
             case 12:
-                mouth1QuarterOpenAnimation.play();
-                break;
-            case 13:
-                mouthHalfOpenAnimation.play();
-                break;
-            case 14:
-                mouthHalfOpenAnimation.play();
-                break;
             case 15:
-                mouth1QuarterOpenAnimation.play();
-                break;
             case 16:
-                mouth1QuarterOpenAnimation.play();
-                break;
-            case 17:
-                mouthCompleteOpenAnimation.play();
-                break;
             case 18:
                 mouth1QuarterOpenAnimation.play();
+                updateMouthState(3)
                 break;
+            case 3:
+            case 8:
+            case 10:
+            case 13:
+            case 14:
+                mouthHalfOpenAnimation.play();
+                updateMouthState(6)
+                break;
+            case 2:
+            case 4:
+            case 5:
             case 19:
                 mouth3QuarterOpenAnimation.play();
+                updateMouthState(9)
                 break;
+            case 1:
+            case 9:
+            case 11:
+            case 17:
             case 20:
                 mouthCompleteOpenAnimation.play();
+                updateMouthState(12)
                 break;
+            case 0:
             case 21:
-                mouthCompleteCloseAnimation.play();
-                break;
             default:
-                mouthCompleteCloseAnimation.play();
+                mouthCloseAnimation.play();
+                updateMouthState(0)
         }
         setTimeout(resolve(), 2*duration);
     });
