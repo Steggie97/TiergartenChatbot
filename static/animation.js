@@ -5,12 +5,11 @@ let closedEyes = document.getElementById('redPanda_closed_eyes');
 let tail = document.getElementById('redPanda_tail');
 let head = document.getElementById('redPanda_head');
 
+let earLeft = document.getElementById('g3064');
+let earRight = document.getElementById('g3069');
+
 //Aktuelle Position des Mundes
 let mouthY = 0;
-
-function updateMouthState(newState){
-    mouthY = newState
-}
 //Variable Animationslänge
 let animationDuration = 50;
 

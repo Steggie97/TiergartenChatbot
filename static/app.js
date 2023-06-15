@@ -44,11 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         let textMsg = document.getElementById('textInput').value;
-        sendTextMsg(textMsg);
-        //leeren des Text-Inputfeldes
-        document.getElementById('textInput').value = '';
-        //Texteingabe des Users in Chatlog anzeigen:
-        addMessageToChatLog(textMsg, false);
+        if (textMsg) {   //leere Eingabe wird unterbunden um fehler zu vermeiden
+            headBobbing.play();
+            sendTextMsg(textMsg);
+            //leeren des Text-Inputfeldes
+            document.getElementById('textInput').value = '';
+            //Texteingabe des Users in Chatlog anzeigen:
+            addMessageToChatLog(textMsg, false);
+        }
     });
 
     //Eventhandler für Spracheingaben
@@ -106,7 +109,7 @@ async function animateMouth(visemInfo) {
       } else {
         duration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
       }
-      animationDuration = 2*duration;   //animationDuration wird nicht genutzt?
+      animationDuration = 2*duration;
       await delay(duration); // Warte bis zum angegebenen Audiooffset
       await playAnimation(visemId[i], duration);
     }
@@ -129,7 +132,7 @@ async function playAnimation(visemId, duration){
             case 16:
             case 18:
                 mouth1QuarterOpenAnimation.play();
-                updateMouthState(3)
+                mouthY=3
                 break;
             case 3:
             case 8:
@@ -137,14 +140,14 @@ async function playAnimation(visemId, duration){
             case 13:
             case 14:
                 mouthHalfOpenAnimation.play();
-                updateMouthState(6)
+                mouthY=6
                 break;
             case 2:
             case 4:
             case 5:
             case 19:
                 mouth3QuarterOpenAnimation.play();
-                updateMouthState(9)
+                mouthY=9
                 break;
             case 1:
             case 9:
@@ -152,13 +155,13 @@ async function playAnimation(visemId, duration){
             case 17:
             case 20:
                 mouthCompleteOpenAnimation.play();
-                updateMouthState(12)
+                mouthY=12
                 break;
             case 0:
             case 21:
             default:
                 mouthCloseAnimation.play();
-                updateMouthState(0)
+                mouthY=0
         }
         setTimeout(resolve(), 2*duration);
     });
