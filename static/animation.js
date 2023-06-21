@@ -69,7 +69,7 @@ let mouthCompleteOpenAnimation = anime({
     targets: openMouth,
     translateY: [mouthY, 12],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
     //complete: () => {
     //    mouthCompleteCloseAnimation.play();
@@ -80,7 +80,7 @@ let mouthCompleteCloseAnimation = anime({
     targets: openMouth,
     translateY: [12,0],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
 });
 
@@ -89,7 +89,7 @@ let mouth3QuarterOpenAnimation = anime({
     targets: openMouth,
     translateY: [mouthY, 9],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
     //complete: () => {
     //    mouth3QuarterCloseAnimation.play();
@@ -99,7 +99,7 @@ let mouth3QuarterCloseAnimation = anime({
     targets: openMouth,
     translateY: [9, 0],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
 });
 
@@ -108,7 +108,7 @@ let mouthHalfOpenAnimation = anime({
     targets: openMouth,
     translateY: [mouthY, 6],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
     //complete: () => {
     //    mouthHalfCloseAnimation.play();
@@ -118,7 +118,7 @@ let mouthHalfCloseAnimation = anime({
     targets: openMouth,
     translateY: [6, 0],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
 });
 
@@ -127,7 +127,7 @@ let mouth1QuarterOpenAnimation = anime({
     targets: openMouth,
     translateY: [mouthY, 3],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
     //complete: () => {
     //    mouth1QuarterCloseAnimation.play();
@@ -137,7 +137,7 @@ let mouth1QuarterCloseAnimation = anime({
     targets: openMouth,
     translateY: [3, 0],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
 });
 
@@ -146,12 +146,12 @@ let mouthCloseAnimation = anime({
     targets: openMouth,
     translateY: [mouthY,0],
     duration: animationDuration,
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false,
 });
 
 let headBobbing = anime.timeline({
-    easing: 'linear',
+    easing: 'easeInOutSine',
     autoplay: false
 }).add({
     targets: head,

@@ -82,9 +82,6 @@ const sessionClient = new dialogflow.SessionsClient({ keyFilename: config });
 //Pfade zu Input-Audio- /bzw. Output-Audio-Datei
 const outputFile = './static/media/Audio/output.wav';
 
-//Context Variable für die Erkennung älterer Fragen
-let lastContext = '';
-
 // VisemeInfo
 let visemeInfo = {
   audioOffset: [],
@@ -106,8 +103,6 @@ async function detectIntent(query) {
     },
   };
   const responses = await sessionClient.detectIntent(request);
-  console.log(responses);
-
   //Ausgaben
   return responses[0];
 }
@@ -138,6 +133,7 @@ async function textToSpeech(text) {
     function (result) {
       if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
         console.log("synthesis finished.");
+        console.log("============================================================================");
       } else {
         console.error("Speech synthesis canceled, " + result.errorDetails +
           "\nDid you set the speech resource key and region values?");
@@ -152,7 +148,6 @@ async function textToSpeech(text) {
     });
   console.log("Now synthesizing to: " + outputFile);
 }
-
 
 //Express-Server Endpunkte:
 // Endpunkt für Textnachrichten:
@@ -179,5 +174,3 @@ app.post('/chat', async (req, res) => {
     res.status(500).send(JSON.stringify({ text: 'fehler' }));
   }
 });
-
-

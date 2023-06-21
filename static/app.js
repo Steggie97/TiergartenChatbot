@@ -63,10 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    //Chatbot Begrüßung
-    //setTimeout(() => {
+    //Chatbot automatische Begrüßung 
+    // Nicht funktional mit Browser aufgrund der Anpassung der Autoplay-Policy
+    //Ohne Eingabe des Users wird kein Sound abgespielt
+    /*
+    setTimeout(() => {
         sendTextMsg('Hallo');
-    //},500);
+    },1500);
+    */
 });
 
 //Funktion zum Einhängen der Textnachricht im Chatlog
@@ -102,19 +106,18 @@ async function animateMouth(visemInfo) {
     let visemId = visemInfo.visemeId;
     
     for (let i = 0; i < visemId.length; i++) {
-      let duration;
       // Animationsdauer ermitteln
       if (i === 0) {
-        duration = Math.floor(audioOffset[0]);
+        //Erste Mundanimation wird ohne Delay gestartet:
+        animationDuration = Math.floor(audioOffset[0]);
       } else {
-        duration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
+        //Alle anderen Animationen werden mit einem Delay gestartet:
+        animationDuration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
       }
-      animationDuration = 2*duration;
-      await delay(duration); // Warte bis zum angegebenen Audiooffset
-      await playAnimation(visemId[i], duration);
+      await playAnimation(visemId[i], animationDuration);
+      await delay(Math.floor(animationDuration*0.95)); // Warte bis zum angegebenen Audiooffset
     }
   }
-  
   function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -123,7 +126,7 @@ async function animateMouth(visemInfo) {
 async function playAnimation(visemId, duration){
     //Animation wird in Abhängigkeit der VisemeId abgespielt
     return new Promise((resolve) => {
-        console.log(`VisemId: ${visemId}, audioOffset: ${duration}`);
+        //console.log(`VisemId: ${visemId}, audioOffset: ${duration}`);
         switch (visemId) {
             case 6:
             case 7:
@@ -163,7 +166,7 @@ async function playAnimation(visemId, duration){
                 mouthCloseAnimation.play();
                 mouthY=0
         }
-        setTimeout(resolve(), 2*duration);
+        resolve()
     });
    
 }
