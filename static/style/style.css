@@ -145,3 +145,8 @@ h2 {
 #redPanda_tail{
     transform-origin:50px;
 }
+
+#redPanda_head{
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
