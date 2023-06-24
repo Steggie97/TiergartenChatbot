@@ -27,8 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ende der Spracherkennung
     recogniton.onresult = (event) => {
         
-        eyeBrowLower.play();
-        headUntilt.play();
+        animEndAttention();
         
         let input = event.results[0][0].transcript;
         console.log(`Speechrecognition-Result: ${input}`);
@@ -63,8 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!speechIsActive) {
             //Start der Speechrecognition (siehe Speechrecognition-Eventhandler)
             
-            eyeBrowRaise.play();
-            headTilt.play();
+            animPayAttention();
 
             recogniton.start();
         }
@@ -82,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //Animationsloops mit zufälligen Zeitabständen starten
     randomBlink();
     randomWobble();
+    randomTilt();
 });
 
 //Funktion zum Einhängen der Textnachricht im Chatlog
@@ -145,7 +144,7 @@ async function playAnimation(visemId, duration){
             case 15:
             case 16:
             case 18:
-                mouthMovement(mouthCurrent, 3);
+                mouthMovement(3);
                 //mouth1QuarterOpenAnimation.play();
                 //mouthCurrent=3
                 break;
@@ -154,7 +153,7 @@ async function playAnimation(visemId, duration){
             case 10:
             case 13:
             case 14:
-                mouthMovement(mouthCurrent, 6);
+                mouthMovement(6);
                 //mouthHalfOpenAnimation.play();
                 //mouthCurrent=6
                 break;
@@ -162,7 +161,7 @@ async function playAnimation(visemId, duration){
             case 4:
             case 5:
             case 19:
-                mouthMovement(mouthCurrent, 9);
+                mouthMovement(9);
                 //mouth3QuarterOpenAnimation.play();
                 //mouthCurrent=9
                 break;
@@ -171,14 +170,14 @@ async function playAnimation(visemId, duration){
             case 11:
             case 17:
             case 20:
-                mouthMovement(mouthCurrent, 12);
+                mouthMovement(12);
                 //mouthCompleteOpenAnimation.play();
                 //mouthCurrent=12
                 break;
             case 0:
             case 21:
             default:
-                mouthMovement(mouthCurrent, 0);
+                mouthMovement(0);
                 //mouthCloseAnimation.play();
                 //mouthCurrent=0
         }

@@ -16,32 +16,6 @@ let mouthCurrent = 0;
 //Variable Animationslänge
 let animationDuration = 50;
 
-//Augenanimation:
-let eyeAnimation = anime.timeline({
-    easing: 'easeInOutSine',
-    autoplay: false,
-    loop: true
-}).add({
-    //Augen schließen
-    targets: openEyes,
-    opacity: [1, 0],
-    duration: 10,
-    delay:4500
-}).add({
-    //Augen öffnen
-    targets: closedEyes,
-    opacity: [0,1],
-    duration: 10
-}).add({
-    targets:closedEyes,
-    opacity: [1,0],
-    duration: 10,
-    delay: 250
-}).add({
-    targets:openEyes,
-    opacity:[0,1],
-    duration:10
-});
 
 //Schwanzwackeln
 let tailAnimation = anime.timeline({
@@ -63,136 +37,81 @@ let tailAnimation = anime.timeline({
     delay: 400
 });
 
-//Mundanimationen
-//Mund wird zu 100% geöffnet
-let mouthCompleteOpenAnimation = anime({
-    targets: openMouth,
-    translateY: [mouthCurrent, 12],
-    duration: animationDuration,
-    easing: 'easeInOutSine',
-    autoplay: false,
-    //complete: () => {
-    //    mouthCompleteCloseAnimation.play();
-    //}
-});
-//Mund wird zu 75% geöffnet
-let mouth3QuarterOpenAnimation = anime({
-    targets: openMouth,
-    translateY: [mouthCurrent, 9],
-    duration: animationDuration,
-    easing: 'easeInOutSine',
-    autoplay: false,
-    //complete: () => {
-    //    mouth3QuarterCloseAnimation.play();
-    //}
-});
-// Mund wird zu 50% geöffnet
-let mouthHalfOpenAnimation = anime({
-    targets: openMouth,
-    translateY: [mouthCurrent, 6],
-    duration: animationDuration,
-    easing: 'easeInOutSine',
-    autoplay: false,
-    //complete: () => {
-    //    mouthHalfCloseAnimation.play();
-    //}
-});
-//Mund wird zu 25% geöffnet
-let mouth1QuarterOpenAnimation = anime({
-    targets: openMouth,
-    translateY: [mouthCurrent, 3],
-    duration: animationDuration,
-    easing: 'easeInOutSine',
-    autoplay: false,
-});
-//Mund wird von beliebiger Position geschlossen
-let mouthCloseAnimation = anime({
-    targets: openMouth,
-    translateY: [mouthCurrent,0],
-    duration: animationDuration,
-    easing: 'easeInOutSine',
-    autoplay: false,
-});
-
 //Nicken
 let headBobbing = anime.timeline({
     easing: 'easeInOutSine',
     autoplay: false
 }).add({
     targets: head,
-    translateY: [0,5],
-    translateX: [-4,-4],
+    translateY: '+=5',
     duration: 250
 }).add({
     targets: head,
-    translateY: [5,0],
-    translateX: [-4,-4],
+    translateY: '-=5',
     duration: 250,
     delay: 100
 });
 //Kopf Schieflage und umkehr
-let headUntilt = anime({
-    targets: head,
-    autoplay: false,
-    easing: 'easeInOutSine',
-    duration: 500,
-    rotate: [-10, 0],
-    translateX: [-14, -4],
-    translateY: [10, 0],
-    scaleX: [1.05, 1],
-    scaleY: [1.05, 1],
-    //rotateY: [25, 0],
-    complete: () => {
-        headBobbing.play()
-    }
-});
-let headTilt = anime({
-    targets: head,
-    autoplay: false,
-    easing: 'easeInOutSine',
-    duration: 500,
-    rotate: [0, -10],
-    translateX: [-4, -14],
-    translateY: [0, 10],
-    scaleX: [1, 1.05],
-    scaleY: [1, 1.05],
-    //rotateY: [0, 25],
-});
-//Augenbrauen
-let eyeBrowLower = anime({
-    targets: eyeBrows,
-    autoplay: false,
-    easing: 'easeInOutSine',
-    duration: 200,
-    //translateX: [-4, -4],
-    translateY: [-5, 0],
-});
-let eyeBrowRaise = anime({
-    targets: eyeBrows,
-    autoplay: false,
-    easing: 'easeInOutSine',
-    duration: 200,
-    //translateX: [-4, -4],
-    translateY: [0, -5],
-});
-
-
+function animPayAttention() {
+    let headTilt = anime({
+        targets: head,
+        autoplay: true,
+        easing: 'easeInOutSine',
+        duration: 500,
+        rotate: '-=10',
+        translateX: '-=10',
+        translateY: '+=10',
+        scaleX: '+=0.05',
+        scaleY: '+=0.05',
+    });
+    let eyeBrowRaise = anime({
+        targets: eyeBrows,
+        autoplay: true,
+        easing: 'easeInOutSine',
+        duration: 200,
+        translateY: '-=5',
+    });
+}
+function animEndAttention() {
+    let eyeBrowLower = anime({
+        targets: eyeBrows,
+        autoplay: true,
+        easing: 'easeInOutSine',
+        duration: 200,
+        translateY: '+=5',
+    });
+    
+    let headUntilt = anime({
+        targets: head,
+        autoplay: true,
+        easing: 'easeInOutSine',
+        duration: 500,
+        rotate: '+=10',
+        translateX: '+=10',
+        translateY: '-=10',
+        scaleX: '-=0.05',
+        scaleY: '-=0.05',
+        complete: () => {
+            headBobbing.play()
+        }
+    });
+}
 
 //nicht-fixe Animationen
 
 //dynamischer Mund
-function mouthMovement(before, after) {
+function mouthMovement(mouthAfter) {
     anime({
         targets: openMouth,
-        translateY: [before, after],
+        translateY: [mouthCurrent, mouthAfter],
         duration: animationDuration,
         easing: 'easeInOutSine',
         autoplay: true,
     })
-    mouthCurrent=after;
+    mouthCurrent=mouthAfter;
 }
 
-//random-delay Blinzeln
+//zufälliges Blinzeln
 function randomBlink() {
     anime.timeline({
         easing: 'easeInOutSine',
@@ -223,7 +142,7 @@ function randomBlink() {
     });
 }
 
-//random headWobble
+//zufälliges Kopf-Strecken
 function randomWobble() {
     anime({
         autoplay: true,
@@ -232,21 +151,56 @@ function randomWobble() {
             anime.timeline({
                 easing: 'easeInOutSine',
                 autoplay: true,
-                loop: 3,
+                loop: 2,
                 targets: head,
-                duration: 200,
+                duration: 400,
             }).add({
-                scaleX: [1, 1.02],
+                scaleX: '+=0.02',
+                scaleY: '-=0.02',
             }).add({
-                scaleY: [1, 1.02],
+                scaleX: '-=0.04',
+                scaleY: '+=0.04',
             }).add({
-                scaleX: [1.02, 1],
+                scaleX: '+=0.04',
+                scaleY: '-=0.04',
             }).add({
-                scaleY: [1.02, 1],
+                scaleX: '-=0.02',
+                scaleY: '+=0.02',
             });
         },
         complete: () => {
             randomWobble();
+        }
+    });
+}
+
+//zufälliges Kopf-Wackeln
+function randomTilt() {
+    anime({
+        autoplay: true,
+        duration: anime.random(15000, 30000),
+        begin: () => {
+            anime.timeline({
+                easing: 'easeInOutSine',
+                autoplay: true,
+                loop: 2,
+                targets: head,
+            }).add({
+                duration: 250,
+                rotate: '-=5',
+                translateX: '-=2',
+            }).add({
+                duration: 500,
+                rotate: '+=10',
+                translateX: '+=4',
+            }).add({
+                duration: 250,
+                rotate: '-=5',
+                translateX: '-=2',
+            });
+        },
+        complete: () => {
+            randomTilt();
         }
     });
 }
