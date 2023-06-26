@@ -1,7 +1,18 @@
 // Author: Lukas Steggers
 // FrontEnd-Script:
 //Variablen: 
+
+//Flag zur Erkennung, ob Spracheingabe aktiviert oder deaktiviert ist:
 let speechIsActive = false;
+//Flag: True, wenn animPayAttention() ausgeführt wird. Nach Ausführung von animEndAttention() -> false. Default Wert bei Initialisierung: false
+let attention = false;
+//Visem-Informationen für Fallback-Audio, falls keine Spracheingabe erfolgt.
+//Text der Fallback-Sprachausgabe: Entschuldige bitte, ich habe deine Frage nicht verstanden.
+let fallback = {
+    audioOffset: [50,100,225,287.5,350,437.5,512.5,600,637.5,700,787.5,850,925,1000,1112.5,1262,1475,1512.5,1575,1662.5,1737.5,1800,1862.5,1937.5,1968.75,2000,2075,2137.5,2225,2300,2412.5,2512.5,2575,2637.5,2687.5,2750,2825,2862.5,2900,2962.5,3025,3100,3150,3287.5,3450,3537],
+    visemeId: [0,4,19,19,16,4,14,19,6,20,1,21,6,19,1,0,6,12,12,2,21,1,19,2,6,19,1,18,13,2,20,1,19,6,12,19,18,4,4,16,19,2,19,19,19,0]
+  };
+
 //Eventlistener:Skript soll erst ausgeführt werden, wenn das DOM vollständig geladen ist:
 document.addEventListener('DOMContentLoaded', () => {
     //Verwendung der Browser-Speechrecognition via Speechrecognition-Objekt/ WebkitURL-Speechrecogniton
@@ -18,17 +29,31 @@ document.addEventListener('DOMContentLoaded', () => {
     //Spracherkennung-Eventhandler:
     //Start der Spracherkennung
     recogniton.onstart = () => {
-        console.log('Spracherkennung gestartet');
+        console.log('speech recognition started');
         speechIsActive = true;
         //Änderung des Buttons: Background-Color bleibt während der Aufnahme 
         document.getElementById('recordBtn').style.backgroundColor = '#f47b20';
+        //Falls innerhalb von 5 Sekunden keine Spracheingabe getätigt wird, wird die Spracherkennung abgebrochen:
+        setTimeout(() => {
+            if (attention) {
+                recogniton.abort();
+                console.log('speech recognition aborted');
+                animEndAttention();
+                attention = false;
+                speechIsActive = false;
+                document.getElementById('recordBtn').style.backgroundColor = '#640000';
+                addMessageToChatLog('Entschuldige bitte, ich habe deine Frage nicht verstanden.', true);
+                playAudio(false);
+                animateMouth(fallback);
+            }
+        }, 5000);
     }
 
     // Ende der Spracherkennung
     recogniton.onresult = (event) => {
-        
+        console.log('speech recognition result');
         animEndAttention();
-        
+        attention = false;
         let input = event.results[0][0].transcript;
         console.log(`Speechrecognition-Result: ${input}`);
         //Erkannter Text im Chatlog einhängen:
@@ -61,16 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         if (!speechIsActive) {
             //Start der Speechrecognition (siehe Speechrecognition-Eventhandler)
-            
-            animPayAttention();
 
+            animPayAttention();
+            attention = true;
             recogniton.start();
         }
     });
 
-    //Chatbot automatische Begrüßung 
-    // Nicht funktional mit Browser aufgrund der Anpassung der Autoplay-Policy
-    //Ohne Eingabe des Users wird kein Sound abgespielt
+    //Chatbot automatische Begrüßung (auskommentiert)
+    // Nicht funktional mit Browser aufgrund der Anpassung der Autoplay-Policy des Browsers
+    //Ohne eine Eingabe des Users wird kein Sound abgespielt
     /*
     setTimeout(() => {
         sendTextMsg('Hallo');
@@ -103,37 +128,42 @@ function addMessageToChatLog(message, isBotMessage) {
 }
 
 // Funktion zum Abspielen einer Audio-Datei
-
-async function playAudio() {
-    //Durch hinzufügen eines Timestamps im Query-Strings wird verhindert, dass die vorherige Antwort, die vom Server geladen wurde, verwendet wird (caching).
-    //Durch den Timestamp ändert sich die URL der Audio-Datei, sodass der Browser immer eine neue Audiodatei vom Server lädt
-    const audio = new Audio('./media/Audio/output.wav?timestamp=' + Date.now());
+async function playAudio(flag) {
+    //Wenn true, dann wird output.wav abgespielt. Ansonsten wird im Fehlerfalle (Keine Spracheingabe) das Fallback-Audio abgespielt
+    if(flag){
+        //Durch hinzufügen eines Timestamps im Query-Strings wird verhindert, dass die vorherige Antwort, die vom Server geladen wurde, verwendet wird (caching).
+        //Durch den Timestamp ändert sich die URL der Audio-Datei, sodass der Browser immer eine neue Audiodatei vom Server lädt
+        audio = new Audio('./media/Audio/output.wav?timestamp=' + Date.now());
+    }else{
+        audio = new Audio('./media/Audio/fallback.wav');
+    }
+    
     audio.play();
 }
 
 async function animateMouth(visemInfo) {
     let audioOffset = visemInfo.audioOffset;
     let visemId = visemInfo.visemeId;
-    
-    for (let i = 0; i < visemId.length; i++) {
-      // Animationsdauer ermitteln
-      if (i === 0) {
-        //Erste Mundanimation wird ohne Delay gestartet:
-        animationDuration = Math.floor(audioOffset[0]);
-      } else {
-        //Alle anderen Animationen werden mit einem Delay gestartet:
-        animationDuration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
-      }
-      await playAnimation(visemId[i], animationDuration);
-      await delay(Math.floor(animationDuration*0.95)); // Warte bis zum angegebenen Audiooffset
-    }
-  }
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
 
-async function playAnimation(visemId, duration){
+    for (let i = 0; i < visemId.length; i++) {
+        // Animationsdauer ermitteln
+        if (i === 0) {
+            //Erste Mundanimation wird ohne Delay gestartet:
+            animationDuration = Math.floor(audioOffset[0]);
+        } else {
+            //Alle anderen Animationen werden mit einem Delay gestartet:
+            animationDuration = Math.floor(audioOffset[i] - audioOffset[i - 1]);
+        }
+        await playAnimation(visemId[i], animationDuration);
+        await delay(Math.floor(animationDuration * 0.95)); // Warte bis zum angegebenen Audiooffset
+    }
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function playAnimation(visemId, duration) {
     //Animation wird in Abhängigkeit der VisemeId abgespielt
     return new Promise((resolve) => {
         //console.log(`VisemId: ${visemId}, audioOffset: ${duration}`);
@@ -178,13 +208,13 @@ async function playAnimation(visemId, duration){
             case 21:
             default:
                 mouthMovement(0);
-                //mouthCloseAnimation.play();
-                //mouthCurrent=0
+            //mouthCloseAnimation.play();
+            //mouthCurrent=0
         }
         resolve()
     });
-   
 }
+
 // Funktion zum Versenden einer Text-Nachricht zum Server
 async function sendTextMsg(msg) {
     try {
@@ -203,10 +233,9 @@ async function sendTextMsg(msg) {
         setTimeout(() => {
             // Antwort vom Chatbot im Chat-Log anzeigen und Audio abspielen.
             addMessageToChatLog(data.text, true);
-            playAudio();
+            playAudio(true);
             animateMouth(data.viseme);
         }, 2500);
-
     } catch (error) {
         console.log(error);
     }
