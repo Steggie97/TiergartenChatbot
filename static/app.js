@@ -42,9 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 attention = false;
                 speechIsActive = false;
                 document.getElementById('recordBtn').style.backgroundColor = '#640000';
+
+                fullResponse(['Entschuldige bitte, ich habe deine Frage nicht verstanden.', true], false, fallback);
+                /*
                 addMessageToChatLog('Entschuldige bitte, ich habe deine Frage nicht verstanden.', true);
                 playAudio(false);
                 animateMouth(fallback);
+                /**/
             }
         }, 5000);
     }
@@ -53,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     recogniton.onresult = (event) => {
         console.log('speech recognition result');
         animEndAttention();
+        nod();
         attention = false;
         let input = event.results[0][0].transcript;
         console.log(`Speechrecognition-Result: ${input}`);
@@ -72,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let textMsg = document.getElementById('textInput').value;
         if (textMsg) {   //leere Eingabe wird unterbunden um fehler zu vermeiden
-            headBobbing.play();
+            nod();
             sendTextMsg(textMsg);
             //leeren des Text-Inputfeldes
             document.getElementById('textInput').value = '';
@@ -103,9 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     */
 
     //Animationsloops mit zufälligen Zeitabständen starten
-    randomBlink();
-    randomWobble();
-    randomTilt();
+    randomBlink(0);
+    randomWobble(0);
+    randomTilt(0);
+    randomSmile(0);
 });
 
 //Funktion zum Einhängen der Textnachricht im Chatlog
@@ -232,11 +238,27 @@ async function sendTextMsg(msg) {
         //Falls die Datei wegen des noch nicht vollständig durchgeführten Überschreibevorgang abgerufen wird, kommt eine Response mit HTTP Status 416 / bzw. u.U. 404
         setTimeout(() => {
             // Antwort vom Chatbot im Chat-Log anzeigen und Audio abspielen.
+            
+            
+            fullResponse([data.text, true], true, data.viseme);
+            /*
             addMessageToChatLog(data.text, true);
             playAudio(true);
             animateMouth(data.viseme);
+            /**/
         }, 2500);
     } catch (error) {
         console.log(error);
     }
+}
+
+async function fullResponse(msg, audio, vis) {
+    await waitForMouth();
+    mouthLock=false;
+
+    addMessageToChatLog(msg[0],msg[1]);
+    playAudio(audio);
+    animateMouth(vis).then(() => {
+        mouthLock=true;
+    });
 }
