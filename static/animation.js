@@ -137,7 +137,7 @@ async function nod() {
     });
 }
 //dynamischer Mund
-async function mouthMovement(mouthAfter) {
+function mouthMovement(mouthAfter) {
     anim = anime({
         targets: openMouth,
         translateY: [mouthCurrent, mouthAfter],
