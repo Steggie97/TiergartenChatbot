@@ -16,7 +16,7 @@ let mouthCurrent = 0;
 //Variable Animationslänge
 let animationDuration = 50;
 
-//lock-Variablen
+//Blockier-Variablen
 let headLock = true;
 let mouthLock = true;
 let eyeLock = true;
@@ -27,18 +27,18 @@ let tailAnimation = anime.timeline({
     autoplay: true,
     loop: true
 }).add({
-    targets: tail,
+    targets: tail,          //von der Animation betroffene DOM-Elemente
     translateX:[0, 10],
-    translateY:[0, -10],
+    translateY:[0, -10],    //Statische Änderungen an CSS Attributen
     rotate: [0,5],
-    duration: 1000,
+    duration: 1000,         //Dauer der Animation (beeienflusst die Geschwindigkeit der Änderungen)
 }).add({
     targets: tail,
     translateX: [10,0],
     translateY: [-10,0],
     rotate: [5,0],
     duration: 2000,
-    delay: 400
+    delay: 400,
 });
 
 //Kopf schief legen und umkehren
@@ -52,57 +52,29 @@ async function animPayAttention() {
     }).add({
         targets: head,
         duration: 500,
-        /*
-        rotate: [0, -10],
-        translateX: [0, -10],
-        translateY: [0, 10],
-        scaleX: [1, 1.05],
-        scaleY: [1, 1.05],
-        /**/
-        
         rotate: '-=10',
         translateX: '-=10',
         translateY: '+=10',
         scaleX: '+=0.05',
         scaleY: '+=0.05',
-        /**/
     }).add({
         targets: eyeBrows,
         duration: 200,
         translateY: '-=5',
     });
-    /*
-    anim.finished.then(() => {
-        headLock=true;
-    });
-    /**/
 }
 async function animEndAttention() {
-    /*
-    await waitForHead();
-    headLock=false;
-    /**/
-
     anim = anime.timeline({
         autoplay: true,
         easing: 'easeInOutSine',
     }).add({
         targets: head,
         duration: 500,
-        /*
-        rotate: [-10, 0],
-        translateX: [-10, 0],
-        translateY: [10, 0],
-        scaleX: [1.05, 1],
-        scaleY: [1.05, 1],
-        /**/
-        
         rotate: '+=10',
         translateX: '+=10',
         translateY: '-=10',
         scaleX: '-=0.05',
         scaleY: '-=0.05',
-        /**/
     }).add({
         targets: eyeBrows,
         duration: 200,
@@ -179,12 +151,13 @@ async function randomBlink(delay) {
         duration:10,
     });
 
+    //Widerholung nach zufällig generiertem Delay
     anim.finished.then(() => {
         eyeLock=true;
         randomBlink(500 + Math.floor(Math.random()*7000));
     });
 }
-//zufälliges Kopf-Strecken
+//zufälliges Kopf-Dehnen
 async function randomWobble(delay) {
     await new Promise(resolve => setTimeout(resolve, delay));;
     await waitForHead();
@@ -245,7 +218,7 @@ async function randomTilt(delay) {
         randomTilt(15000 + Math.floor(Math.random()*15000));
     });
 }
-//zufällig Lächeln
+//zufälliges Lächeln
 async function randomSmile(delay) {
     await new Promise(resolve => setTimeout(resolve, delay));;
     await waitForMouth();
@@ -295,9 +268,11 @@ function waitForHead() {
     return new Promise((resolve) => {
         const checkVariable = () => {
             if (headLock === true) {
+                //Resolve Promise, falls variable true
                 resolve();
             } else {
-                setTimeout(checkVariable, 100); // Check again after 100 milliseconds
+                //Widerhole nach 100 ms
+                setTimeout(checkVariable, 100);
             }
         };
         checkVariable();
@@ -309,7 +284,7 @@ function waitForMouth() {
         if (mouthLock === true) {
             resolve();
         } else {
-            setTimeout(checkVariable, 100); // Check again after 100 milliseconds
+            setTimeout(checkVariable, 100);
         }
     };
     checkVariable();
@@ -321,7 +296,7 @@ function waitForEyes() {
         if (eyeLock === true) {
             resolve();
         } else {
-            setTimeout(checkVariable, 100); // Check again after 100 milliseconds
+            setTimeout(checkVariable, 100);
         }
     };
     checkVariable();

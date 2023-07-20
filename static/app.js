@@ -43,12 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 speechIsActive = false;
                 document.getElementById('recordBtn').style.backgroundColor = '#640000';
 
-                fullResponse(['Entschuldige bitte, ich habe deine Frage nicht verstanden.', true], false, fallback);
-                /*
-                addMessageToChatLog('Entschuldige bitte, ich habe deine Frage nicht verstanden.', true);
-                playAudio(false);
-                animateMouth(fallback);
-                /**/
+                bundledResponse(['Entschuldige bitte, ich habe deine Frage nicht verstanden.', true], false, fallback);
             }
         }, 5000);
     }
@@ -181,8 +176,6 @@ async function playAnimation(visemId, duration) {
             case 16:
             case 18:
                 mouthMovement(3);
-                //mouth1QuarterOpenAnimation.play();
-                //mouthCurrent=3
                 break;
             case 3:
             case 8:
@@ -190,16 +183,12 @@ async function playAnimation(visemId, duration) {
             case 13:
             case 14:
                 mouthMovement(6);
-                //mouthHalfOpenAnimation.play();
-                //mouthCurrent=6
                 break;
             case 2:
             case 4:
             case 5:
             case 19:
                 mouthMovement(9);
-                //mouth3QuarterOpenAnimation.play();
-                //mouthCurrent=9
                 break;
             case 1:
             case 9:
@@ -207,15 +196,11 @@ async function playAnimation(visemId, duration) {
             case 17:
             case 20:
                 mouthMovement(12);
-                //mouthCompleteOpenAnimation.play();
-                //mouthCurrent=12
                 break;
             case 0:
             case 21:
             default:
                 mouthMovement(0);
-            //mouthCloseAnimation.play();
-            //mouthCurrent=0
         }
         resolve()
     });
@@ -237,22 +222,17 @@ async function sendTextMsg(msg) {
         //Einen Delay von 2500ms einfügen, damit die vollständige Audio-Datei gesendet werden kann
         //Falls die Datei wegen des noch nicht vollständig durchgeführten Überschreibevorgang abgerufen wird, kommt eine Response mit HTTP Status 416 / bzw. u.U. 404
         setTimeout(() => {
-            // Antwort vom Chatbot im Chat-Log anzeigen und Audio abspielen.
-            
-            
-            fullResponse([data.text, true], true, data.viseme);
-            /*
-            addMessageToChatLog(data.text, true);
-            playAudio(true);
-            animateMouth(data.viseme);
-            /**/
+            // Antwort vom Chatbot im Chat-Log anzeigen; Audio und Animation abspielen.
+            bundledResponse([data.text, true], true, data.viseme);
         }, 2500);
     } catch (error) {
         console.log(error);
     }
 }
 
-async function fullResponse(msg, audio, vis) {
+//Textausgabe; Audio und Animation in eine async Funktion ausgelagert, 
+//damit die Animation auf die Freigabe des Mundes warten kann.
+async function bundledResponse(msg, audio, vis) {
     await waitForMouth();
     mouthLock=false;
 
